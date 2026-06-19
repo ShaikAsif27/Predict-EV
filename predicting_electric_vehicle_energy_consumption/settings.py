@@ -148,3 +148,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'Template/media')
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+
+# Django 3.2 default primary key field
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+# Allow iframes for charts
+X_FRAME_OPTIONS = 'SAMEORIGIN'
