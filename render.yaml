@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: ev-energy-analytics
+    env: python
+    buildCommand: "pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --no-input"
+    startCommand: "gunicorn predicting_electric_vehicle_energy_consumption.wsgi --log-file -"
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: "*"
+      - key: SECRET_KEY
+        generateValue: true
+    disk:
+      name: ev-db-disk
+      mountPath: /data
+      sizeGB: 1

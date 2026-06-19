@@ -1,0 +1,107 @@
+{% extends 'SProvider/design1.html' %}
+{% block researchblock %}
+
+<div class="ev-card">
+  <div class="ev-card-header">
+    <div class="ev-card-icon icon-indigo">
+      <i class="bi bi-people-fill"></i>
+    </div>
+    <div>
+      <h2>Registered Remote Users</h2>
+      <p>All users registered on the EV Analytics prediction platform.</p>
+    </div>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:0.75rem;">
+      {% if objects %}
+      <div style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:99px;padding:0.3rem 0.85rem;display:flex;align-items:center;gap:0.4rem;">
+        <i class="bi bi-people" style="color:var(--accent-indigo-light);font-size:0.85rem;"></i>
+        <span style="font-size:0.78rem;font-weight:700;color:var(--accent-indigo-light);">{{ objects|length }} User{{ objects|length|pluralize }}</span>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="ev-table-wrapper">
+    <table class="ev-table">
+      <thead>
+        <tr>
+          <th><i class="bi bi-hash me-1"></i>#</th>
+          <th><i class="bi bi-person-fill me-1"></i>Username</th>
+          <th><i class="bi bi-envelope-fill me-1"></i>Email</th>
+          <th><i class="bi bi-gender-ambiguous me-1"></i>Gender</th>
+          <th><i class="bi bi-geo-alt-fill me-1"></i>Address</th>
+          <th><i class="bi bi-telephone-fill me-1"></i>Mobile</th>
+          <th><i class="bi bi-globe2 me-1"></i>Country</th>
+          <th><i class="bi bi-map-fill me-1"></i>State</th>
+          <th><i class="bi bi-building-fill me-1"></i>City</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for o in objects %}
+        <tr>
+          <td style="color:var(--text-muted);font-weight:600;">{{ forloop.counter }}</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:0.65rem;">
+              <div style="width:32px;height:32px;border-radius:50%;
+                          background:linear-gradient(135deg,var(--accent-indigo),var(--accent-violet));
+                          display:flex;align-items:center;justify-content:center;
+                          font-size:0.75rem;font-weight:800;color:#fff;flex-shrink:0;
+                          box-shadow:0 0 10px rgba(99,102,241,0.3);">
+                {{ o.username|first|upper }}
+              </div>
+              <div>
+                <div style="font-weight:700;font-size:0.875rem;">{{ o.username }}</div>
+              </div>
+            </div>
+          </td>
+          <td style="color:var(--text-secondary);font-size:0.82rem;">{{ o.email }}</td>
+          <td>
+            {% if o.gender == "Male" %}
+              <span class="ev-badge badge-info">♂ Male</span>
+            {% elif o.gender == "Female" %}
+              <span class="ev-badge badge-danger">♀ Female</span>
+            {% else %}
+              <span class="ev-badge badge-info">{{ o.gender }}</span>
+            {% endif %}
+          </td>
+          <td style="color:var(--text-secondary);font-size:0.8rem;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+            {{ o.address }}
+          </td>
+          <td style="font-family:monospace;font-size:0.83rem;">{{ o.phoneno }}</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:0.35rem;">
+              <i class="bi bi-globe2" style="color:var(--accent-cyan);font-size:0.75rem;"></i>
+              {{ o.country }}
+            </div>
+          </td>
+          <td style="color:var(--text-secondary);">{{ o.state }}</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:0.35rem;">
+              <i class="bi bi-building" style="color:var(--accent-indigo-light);font-size:0.75rem;"></i>
+              {{ o.city }}
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="9" style="text-align:center;padding:4rem;color:var(--text-muted);">
+            <i class="bi bi-people" style="font-size:2.8rem;display:block;margin-bottom:0.75rem;opacity:0.35;"></i>
+            <p style="font-size:0.9rem;">No users registered yet.</p>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div style="margin-top:1.25rem;display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center;padding-top:1rem;border-top:1px solid var(--border-color);">
+    <a href="{% url 'train_model' %}" class="ev-btn ev-btn-secondary ev-btn-sm">
+      <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
+    <div style="margin-left:auto;font-size:0.75rem;color:var(--text-muted);">
+      <i class="bi bi-shield-check me-1"></i>
+      {% if objects %}{{ objects|length }} registered user{{ objects|length|pluralize }} on the platform{% endif %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}

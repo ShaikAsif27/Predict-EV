@@ -1,0 +1,150 @@
+{% extends 'SProvider/design1.html' %}
+{% block researchblock %}
+
+<div class="ev-card" style="max-width:780px;">
+  <div class="ev-card-header">
+    <div class="ev-card-icon icon-amber">
+      <i class="bi bi-pie-chart-fill"></i>
+    </div>
+    <div>
+      <h2>Prediction Ratio Summary</h2>
+      <p>Distribution of predicted EV energy consumption types across all records.</p>
+    </div>
+    <div style="margin-left:auto;">
+      <a href="{% url 'charts' 'pie' %}" class="ev-btn ev-btn-primary ev-btn-sm">
+        <i class="bi bi-graph-up"></i> View Chart
+      </a>
+    </div>
+  </div>
+
+  {% if objs %}
+
+  <!-- Stat Cards -->
+  <div class="ev-stats-grid" style="margin-bottom:2rem;">
+    {% for object in objs %}
+    <div class="ev-stat-card" style="
+      {% if object.names == 'Less' %}
+        border-color:rgba(16,185,129,0.2);
+        background:linear-gradient(135deg,rgba(16,185,129,0.06) 0%,rgba(6,182,212,0.04) 100%);
+      {% else %}
+        border-color:rgba(245,158,11,0.2);
+        background:linear-gradient(135deg,rgba(245,158,11,0.06) 0%,rgba(244,63,94,0.04) 100%);
+      {% endif %}">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+          {% if object.names == 'Less' %}background:rgba(16,185,129,0.15);color:var(--accent-emerald-light);
+          {% else %}background:rgba(245,158,11,0.15);color:var(--accent-amber-light);{% endif %}">
+          <i class="bi {% if object.names == 'Less' %}bi-battery-charging{% else %}bi-battery-exclamation{% endif %}"></i>
+        </div>
+        <span class="ev-badge {% if object.names == 'Less' %}badge-success{% else %}badge-warning{% endif %}">
+          {{ object.names }}
+        </span>
+      </div>
+      <div class="ev-stat-label"><i class="bi bi-pie-chart me-1"></i>{{ object.names }} Consumption</div>
+      <div class="ev-stat-value"
+           style="{% if object.names == 'Less' %}color:var(--accent-emerald-light){% else %}color:var(--accent-amber-light){% endif %}">
+        {{ object.ratio|floatformat:1 }}%
+      </div>
+      <div class="ev-stat-sub">of total predictions</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Ratio Progress Bars -->
+  <div style="margin-bottom:2rem;">
+    <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:1.25rem;display:flex;align-items:center;gap:0.5rem;">
+      <i class="bi bi-bar-chart-steps" style="color:var(--accent-amber-light);"></i> Distribution Breakdown
+    </div>
+    {% for object in objs %}
+    <div class="ev-accuracy-item">
+      <div class="ev-accuracy-header">
+        <span class="ev-accuracy-name">
+          {% if object.names == "Less" %}
+            <i class="bi bi-battery-charging me-2" style="color:var(--accent-emerald-light);"></i>
+          {% else %}
+            <i class="bi bi-battery-exclamation me-2" style="color:var(--accent-amber-light);"></i>
+          {% endif %}
+          {{ object.names }} Energy Consumption
+        </span>
+        <span class="ev-accuracy-val"
+              style="{% if object.names == 'Less' %}color:var(--accent-emerald-light){% else %}color:var(--accent-amber-light){% endif %}">
+          {{ object.ratio|floatformat:2 }}%
+        </span>
+      </div>
+      <div class="ev-progress">
+        <div class="ev-progress-bar"
+             style="width:{{ object.ratio|floatformat:0 }}%;
+                    {% if object.names == 'Less' %}background:linear-gradient(90deg,var(--accent-emerald),var(--accent-cyan))
+                    {% else %}background:linear-gradient(90deg,var(--accent-amber),var(--accent-rose)){% endif %}">
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Detail Table -->
+  <div>
+    <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
+      <i class="bi bi-table" style="color:var(--accent-cyan);"></i> Detailed Breakdown
+    </div>
+    <div class="ev-table-wrapper">
+      <table class="ev-table">
+        <thead>
+          <tr>
+            <th><i class="bi bi-tag me-1"></i>Consumption Type</th>
+            <th><i class="bi bi-percent me-1"></i>Ratio (%)</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for object in objs %}
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:0.5rem;">
+                <div style="width:8px;height:8px;border-radius:50%;
+                  {% if object.names == 'Less' %}background:var(--accent-emerald-light);
+                  {% else %}background:var(--accent-amber-light);{% endif %}">
+                </div>
+                <strong>{{ object.names }}</strong>
+              </div>
+            </td>
+            <td style="font-weight:600;letter-spacing:-0.01em;">{{ object.ratio|floatformat:4 }}</td>
+            <td>
+              {% if object.names == "Less" %}
+                <span class="ev-badge badge-success">
+                  <i class="bi bi-check-circle"></i> Low Consumption
+                </span>
+              {% else %}
+                <span class="ev-badge badge-warning">
+                  <i class="bi bi-exclamation-circle"></i> High Consumption
+                </span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  {% else %}
+  <div class="ev-empty-state">
+    <i class="bi bi-pie-chart ev-empty-icon" style="color:var(--accent-amber-light);opacity:1;"></i>
+    <p>No ratio data available yet. Submit predictions first.</p>
+  </div>
+  {% endif %}
+
+  <div style="margin-top:1.75rem;padding-top:1.25rem;border-top:1px solid var(--border-color);display:flex;gap:0.75rem;flex-wrap:wrap;">
+    <a href="{% url 'charts' 'line' %}" class="ev-btn ev-btn-primary">
+      <i class="bi bi-graph-up"></i> View Ratio Chart
+    </a>
+    <a href="{% url 'charts' 'pie' %}" class="ev-btn ev-btn-secondary">
+      <i class="bi bi-pie-chart-fill"></i> Pie Chart
+    </a>
+    <a href="{% url 'View_Prediction_Of_EV_Energy_Consumption_Type' %}" class="ev-btn ev-btn-secondary">
+      <i class="bi bi-table"></i> Predictions Log
+    </a>
+  </div>
+</div>
+
+{% endblock %}

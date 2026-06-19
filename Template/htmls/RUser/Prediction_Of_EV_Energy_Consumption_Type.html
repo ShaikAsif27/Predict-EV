@@ -1,0 +1,296 @@
+{% extends 'RUser/design.html' %}
+{% block userblock %}
+
+<!-- ── Feature Highlight Strip ──────────────────────────── -->
+<div class="ev-feature-strip" style="margin-bottom:1.75rem;">
+  <div class="ev-feature-item">
+    <div class="ev-feature-icon icon-violet"><i class="bi bi-cpu-fill"></i></div>
+    <div class="ev-feature-label">Voting Classifier Ensemble</div>
+  </div>
+  <div class="ev-feature-item">
+    <div class="ev-feature-icon icon-cyan"><i class="bi bi-lightning-charge-fill"></i></div>
+    <div class="ev-feature-label">Real-time ML Prediction</div>
+  </div>
+  <div class="ev-feature-item">
+    <div class="ev-feature-icon icon-emerald"><i class="bi bi-battery-charging"></i></div>
+    <div class="ev-feature-label">EV Session Intelligence</div>
+  </div>
+  <div class="ev-feature-item">
+    <div class="ev-feature-icon icon-indigo"><i class="bi bi-graph-up-arrow"></i></div>
+    <div class="ev-feature-label">~90% Model Accuracy</div>
+  </div>
+</div>
+
+<div class="ev-card" style="max-width:960px; margin:0 auto;">
+
+  <!-- Card Header -->
+  <div class="ev-card-header">
+    <div class="ev-card-icon icon-indigo">
+      <i class="bi bi-lightning-charge-fill"></i>
+    </div>
+    <div>
+      <h2>EV Energy Consumption Predictor</h2>
+      <p>Enter vehicle and charging session data to get an AI-powered prediction.</p>
+    </div>
+    <div style="margin-left:auto;">
+      <span class="ev-badge badge-cyan"><i class="bi bi-cpu"></i> ML Powered</span>
+    </div>
+  </div>
+
+  <!-- Prediction Form -->
+  <form method="POST" role="form" id="predictionForm">
+    {% csrf_token %}
+
+    <!-- Section: Vehicle Info -->
+    <div style="margin-bottom:1.5rem;">
+      <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
+        <i class="bi bi-car-front-fill" style="color:var(--accent-indigo-light);"></i> Vehicle Information
+      </div>
+      <div class="ev-reg-grid">
+        <div class="ev-form-group">
+          <label for="f_Fid"><i class="bi bi-hash"></i> FID (Field ID)</label>
+          <input type="text" id="f_Fid" name="Fid" class="ev-form-control"
+                 placeholder="e.g. 1001">
+        </div>
+
+        <div class="ev-form-group">
+          <label for="f_Vehicle_Model"><i class="bi bi-car-front"></i> Vehicle Model</label>
+          <input type="text" id="f_Vehicle_Model" name="Vehicle_Model" class="ev-form-control"
+                 placeholder="e.g. Tesla Model 3">
+        </div>
+
+        <div class="ev-form-group">
+          <label for="f_Battery_Capacity_kWh"><i class="bi bi-battery-full"></i> Battery Capacity (kWh)</label>
+          <input type="text" id="f_Battery_Capacity_kWh" name="Battery_Capacity_kWh" class="ev-form-control"
+                 placeholder="e.g. 75">
+        </div>
+
+        <div class="ev-form-group">
+          <label for="f_Vehicle_Age_years"><i class="bi bi-calendar3"></i> Vehicle Age (years)</label>
+          <input type="text" id="f_Vehicle_Age_years" name="Vehicle_Age_years" class="ev-form-control"
+                 placeholder="e.g. 3">
+        </div>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="ev-divider"><span><i class="bi bi-ev-station me-1"></i>Charging Session Details</span></div>
+
+    <!-- Section: Charging Info -->
+    <div style="margin-bottom:1.5rem;">
+      <div class="ev-reg-grid">
+        <div class="ev-form-group">
+          <label for="f_Charging_Station_ID"><i class="bi bi-plug-fill"></i> Charging Station ID</label>
+          <input type="text" id="f_Charging_Station_ID" name="Charging_Station_ID" class="ev-form-control"
+                 placeholder="e.g. CS-042">
+        </div>
+
+        <div class="ev-form-group">
+          <label for="f_Charging_Station_Location"><i class="bi bi-geo-alt-fill"></i> Station Location</label>
+          <input type="text" id="f_Charging_Station_Location" name="Charging_Station_Location" class="ev-form-control"
+                 placeholder="e.g. New York">
+        </div>
+
+        <div class="ev-form-group">
+          <label for="f_Charging_Start_Time"><i class="bi bi-clock-fill"></i> Charging Start Time</label>
+          <input type="text" id="f_Charging_Start_Time" name="Charging_Start_Time" class="ev-form-control"
+                 placeholder="e.g. 08:30">
+        </div>
+
+        <div class="ev-form-group">
+          <label for="f_Charging_EndTime"><i class="bi bi-clock-history"></i> Charging End Time</label>
+          <input type="text" id="f_Charging_EndTime" name="Charging_EndTime" class="ev-form-control"
+                 placeholder="e.g. 10:00">
+        </div>
+
+        <div class="ev-form-group">
+          <label for="f_Energy_Consumed_kWh"><i class="bi bi-lightning-fill"></i> Energy Consumed (kWh)</label>
+          <input type="text" id="f_Energy_Consumed_kWh" name="Energy_Consumed_kWh" class="ev-form-control"
+                 placeholder="e.g. 45.5">
+        </div>
+
+        <div class="ev-form-group">
+          <label for="f_Charging_Duration_hours"><i class="bi bi-hourglass-split"></i> Charging Duration (h)</label>
+          <input type="text" id="f_Charging_Duration_hours" name="Charging_Duration_hours" class="ev-form-control"
+                 placeholder="e.g. 1.5">
+        </div>
+
+        <div class="ev-form-group">
+          <label for="f_Charging_Rate_kW"><i class="bi bi-speedometer2"></i> Charging Rate (kW)</label>
+          <input type="text" id="f_Charging_Rate_kW" name="Charging_Rate_kW" class="ev-form-control"
+                 placeholder="e.g. 22">
+        </div>
+
+        <div class="ev-form-group">
+          <label for="f_Charging_Cost_USD"><i class="bi bi-currency-dollar"></i> Charging Cost (USD)</label>
+          <input type="text" id="f_Charging_Cost_USD" name="Charging_Cost_USD" class="ev-form-control"
+                 placeholder="e.g. 12.50">
+        </div>
+
+        <div class="ev-form-group">
+          <label for="f_Charger_Type"><i class="bi bi-plug"></i> Charger Type</label>
+          <input type="text" id="f_Charger_Type" name="Charger_Type" class="ev-form-control"
+                 placeholder="e.g. Level 2 / DC Fast">
+        </div>
+
+        <div class="ev-form-group">
+          <label for="f_User_Type"><i class="bi bi-person-fill"></i> User Type</label>
+          <input type="text" id="f_User_Type" name="User_Type" class="ev-form-control"
+                 placeholder="e.g. Regular / Fleet">
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div style="margin-top:1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;padding-top:1.25rem;border-top:1px solid var(--border-color);">
+      <button type="submit" name="submit" id="predictBtn"
+              class="ev-btn ev-btn-primary ev-btn-lg">
+        <i class="bi bi-cpu-fill"></i> Run AI Prediction
+      </button>
+      <div style="flex:1;min-width:200px;">
+        <div style="font-size:0.72rem;color:var(--text-muted);display:flex;align-items:center;gap:0.5rem;">
+          <i class="bi bi-info-circle" style="color:var(--accent-indigo-light);"></i>
+          Powered by Voting Classifier — QRNN · SVM · Logistic Regression
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <!-- ── Prediction Result ──────────────────────────────── -->
+  {% if objs %}
+    {% if objs == "Less" %}
+    <div class="ev-result-wrapper">
+      <div class="ev-result-main result-success">
+        <div class="ev-result-top">
+          <div class="ev-result-icon-big">
+            <i class="bi bi-battery-charging"></i>
+          </div>
+          <div class="ev-result-content">
+            <div class="ev-result-eyebrow">AI Prediction Outcome</div>
+            <div class="ev-result-title">Less Energy</div>
+            <div style="margin-top:0.5rem;">
+              <span class="ev-result-badge">
+                <i class="bi bi-check-circle-fill"></i> Low Consumption
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="ev-result-cards-row">
+          <div class="ev-result-info-card">
+            <div class="ev-result-info-label">Prediction</div>
+            <div class="ev-result-info-value" style="color:var(--accent-emerald-light);font-weight:800;">LESS</div>
+          </div>
+          <div class="ev-result-info-card">
+            <div class="ev-result-info-label">Category</div>
+            <div class="ev-result-info-value">Below Average Consumption</div>
+          </div>
+          <div class="ev-result-info-card">
+            <div class="ev-result-info-label">Status</div>
+            <div class="ev-result-info-value" style="color:var(--accent-emerald-light);">✓ Optimal</div>
+          </div>
+        </div>
+      </div>
+      <div class="ev-confidence-card">
+        <div class="ev-confidence-header">
+          <span class="ev-confidence-title"><i class="bi bi-shield-check me-1"></i>Model Confidence</span>
+          <span class="ev-confidence-pct">High</span>
+        </div>
+        <div class="ev-progress"><div class="ev-progress-bar" style="width:88%;"></div></div>
+      </div>
+      <div class="ev-recommendation">
+        <div class="ev-recommendation-icon"><i class="bi bi-lightbulb-fill"></i></div>
+        <div>
+          <div class="ev-recommendation-title">AI Recommendation</div>
+          <div class="ev-recommendation-text">
+            This charging session is predicted to consume a <strong>lower amount of energy</strong>.
+            Your vehicle's usage pattern is within optimal efficiency range. Consider maintaining
+            similar charging habits to maximize battery lifespan and reduce costs.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% elif objs == "More" %}
+    <div class="ev-result-wrapper">
+      <div class="ev-result-main result-warning">
+        <div class="ev-result-top">
+          <div class="ev-result-icon-big">
+            <i class="bi bi-battery-exclamation"></i>
+          </div>
+          <div class="ev-result-content">
+            <div class="ev-result-eyebrow">AI Prediction Outcome</div>
+            <div class="ev-result-title">More Energy</div>
+            <div style="margin-top:0.5rem;">
+              <span class="ev-result-badge">
+                <i class="bi bi-exclamation-triangle-fill"></i> High Consumption
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="ev-result-cards-row">
+          <div class="ev-result-info-card">
+            <div class="ev-result-info-label">Prediction</div>
+            <div class="ev-result-info-value" style="color:var(--accent-amber-light);font-weight:800;">MORE</div>
+          </div>
+          <div class="ev-result-info-card">
+            <div class="ev-result-info-label">Category</div>
+            <div class="ev-result-info-value">Above Average Consumption</div>
+          </div>
+          <div class="ev-result-info-card">
+            <div class="ev-result-info-label">Status</div>
+            <div class="ev-result-info-value" style="color:var(--accent-amber-light);">⚠ Elevated</div>
+          </div>
+        </div>
+      </div>
+      <div class="ev-confidence-card" style="background:rgba(245,158,11,0.06);border-color:rgba(245,158,11,0.18);">
+        <div class="ev-confidence-header">
+          <span class="ev-confidence-title"><i class="bi bi-shield-check me-1"></i>Model Confidence</span>
+          <span class="ev-confidence-pct" style="color:var(--accent-amber-light);">High</span>
+        </div>
+        <div class="ev-progress">
+          <div class="ev-progress-bar" style="width:85%;background:linear-gradient(90deg,var(--accent-amber),var(--accent-rose));"></div>
+        </div>
+      </div>
+      <div class="ev-recommendation" style="border-color:rgba(245,158,11,0.2);background:rgba(245,158,11,0.04);">
+        <div class="ev-recommendation-icon" style="background:rgba(245,158,11,0.12);color:var(--accent-amber-light);">
+          <i class="bi bi-lightbulb-fill"></i>
+        </div>
+        <div>
+          <div class="ev-recommendation-title">AI Recommendation</div>
+          <div class="ev-recommendation-text">
+            This charging session is predicted to consume a <strong>higher amount of energy</strong>.
+            Consider reducing charging duration, optimizing the charging rate, or evaluating the
+            route and load conditions to improve energy efficiency and reduce operational costs.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% else %}
+    <div class="ev-result-wrapper">
+      <div class="ev-result-main result-success">
+        <div class="ev-result-top">
+          <div class="ev-result-icon-big"><i class="bi bi-check-circle-fill"></i></div>
+          <div class="ev-result-content">
+            <div class="ev-result-eyebrow">AI Prediction Outcome</div>
+            <div class="ev-result-title">{{ objs }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  {% endif %}
+
+</div>
+
+<script>
+  document.getElementById('predictBtn').addEventListener('click', function() {
+    this.innerHTML = '<i class="bi bi-arrow-repeat spin me-1"></i> Analyzing...';
+  });
+</script>
+<style>
+  @keyframes spin { from {transform:rotate(0)} to {transform:rotate(360deg)} }
+  .spin { display:inline-block; animation:spin 1s linear infinite; }
+</style>
+
+{% endblock %}

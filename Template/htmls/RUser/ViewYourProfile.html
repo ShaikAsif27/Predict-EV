@@ -1,0 +1,122 @@
+{% extends 'RUser/design.html' %}
+{% block userblock %}
+
+<div class="ev-card">
+  <!-- Card Header with avatar -->
+  <div class="ev-card-header">
+    <div style="width:52px;height:52px;border-radius:50%;
+                background:linear-gradient(135deg,var(--accent-indigo),var(--accent-violet));
+                display:flex;align-items:center;justify-content:center;
+                font-size:1.4rem;font-weight:900;color:#fff;flex-shrink:0;
+                box-shadow:0 0 24px rgba(99,102,241,0.4);">
+      {{ object.username|first|upper }}
+    </div>
+    <div>
+      <h2>{{ object.username }}</h2>
+      <p>Remote User — EV Analytics Platform</p>
+    </div>
+    <div style="margin-left:auto;">
+      <span class="ev-badge badge-success"><i class="bi bi-circle-fill" style="font-size:0.5rem;"></i> Active</span>
+    </div>
+  </div>
+
+  <!-- Profile Fields Grid -->
+  <div style="margin-bottom:0.5rem;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem;">
+    <i class="bi bi-person-lines-fill" style="color:var(--accent-indigo-light);"></i> Account Information
+  </div>
+
+  <div class="ev-profile-grid">
+
+    <div class="ev-profile-field">
+      <div class="ev-profile-field-label">
+        <i class="bi bi-person-fill" style="color:var(--accent-indigo-light);"></i> Username
+      </div>
+      <div class="ev-profile-field-value">{{ object.username }}</div>
+    </div>
+
+    <div class="ev-profile-field">
+      <div class="ev-profile-field-label">
+        <i class="bi bi-envelope-fill" style="color:var(--accent-cyan);"></i> Email Address
+      </div>
+      <div class="ev-profile-field-value">{{ object.email }}</div>
+    </div>
+
+    <div class="ev-profile-field">
+      <div class="ev-profile-field-label">
+        <i class="bi bi-telephone-fill" style="color:var(--accent-emerald-light);"></i> Mobile Number
+      </div>
+      <div class="ev-profile-field-value">{{ object.phoneno }}</div>
+    </div>
+
+    <div class="ev-profile-field">
+      <div class="ev-profile-field-label">
+        <i class="bi bi-gender-ambiguous" style="color:var(--accent-violet-light);"></i> Gender
+      </div>
+      <div class="ev-profile-field-value">
+        {% if object.gender == "Male" %}
+          <span class="ev-badge badge-info">♂ Male</span>
+        {% elif object.gender == "Female" %}
+          <span class="ev-badge badge-danger">♀ Female</span>
+        {% else %}
+          {{ object.gender }}
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="ev-profile-field">
+      <div class="ev-profile-field-label">
+        <i class="bi bi-globe2" style="color:var(--accent-blue-light);"></i> Country
+      </div>
+      <div class="ev-profile-field-value">{{ object.country }}</div>
+    </div>
+
+    <div class="ev-profile-field">
+      <div class="ev-profile-field-label">
+        <i class="bi bi-map-fill" style="color:var(--accent-amber-light);"></i> State
+      </div>
+      <div class="ev-profile-field-value">{{ object.state }}</div>
+    </div>
+
+    <div class="ev-profile-field">
+      <div class="ev-profile-field-label">
+        <i class="bi bi-building-fill" style="color:var(--accent-rose-light);"></i> City
+      </div>
+      <div class="ev-profile-field-value">{{ object.city }}</div>
+    </div>
+
+    <div class="ev-profile-field">
+      <div class="ev-profile-field-label">
+        <i class="bi bi-geo-alt-fill" style="color:var(--accent-emerald-light);"></i> Address
+      </div>
+      <div class="ev-profile-field-value">{{ object.address }}</div>
+    </div>
+
+  </div>
+
+  <!-- Platform Info strip -->
+  <div style="margin-top:1.75rem;padding:1.25rem;background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.12);border-radius:var(--radius-md);display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:0.6rem;">
+      <i class="bi bi-cpu-fill" style="color:var(--accent-indigo-light);font-size:1.1rem;"></i>
+      <div>
+        <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);">Platform Access</div>
+        <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">EV Energy Prediction — Remote User</div>
+      </div>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:0.5rem;flex-wrap:wrap;">
+      <span class="ev-badge badge-cyan"><i class="bi bi-lightning-charge"></i> ML Powered</span>
+      <span class="ev-badge badge-success"><i class="bi bi-shield-check"></i> Verified</span>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div style="margin-top:1.5rem;display:flex;gap:0.75rem;flex-wrap:wrap;">
+    <a href="{% url 'Prediction_Of_EV_Energy_Consumption_Type' %}" class="ev-btn ev-btn-primary ev-btn-lg">
+      <i class="bi bi-lightning-charge-fill"></i> Make a Prediction
+    </a>
+    <a href="{% url 'login' %}" class="ev-btn ev-btn-secondary">
+      <i class="bi bi-box-arrow-right"></i> Logout
+    </a>
+  </div>
+</div>
+
+{% endblock %}

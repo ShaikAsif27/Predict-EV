@@ -1,0 +1,109 @@
+{% extends 'SProvider/design1.html' %}
+{% block researchblock %}
+
+<div class="ev-card">
+  <div class="ev-card-header">
+    <div class="ev-card-icon icon-violet">
+      <i class="bi bi-cpu-fill"></i>
+    </div>
+    <div>
+      <h2>Model Training &amp; Testing Results</h2>
+      <p>Accuracy scores for each trained classification model on the EV dataset.</p>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:0.5rem;flex-wrap:wrap;">
+      <span class="ev-badge badge-cyan"><i class="bi bi-lightning-charge"></i> QRNN</span>
+      <span class="ev-badge badge-info"><i class="bi bi-diagram-3"></i> SVM</span>
+      <span class="ev-badge badge-success"><i class="bi bi-graph-up"></i> LR</span>
+    </div>
+  </div>
+
+  {% if objs %}
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;">
+
+    <!-- Progress Bars Column -->
+    <div>
+      <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:1.25rem;display:flex;align-items:center;gap:0.5rem;">
+        <i class="bi bi-speedometer" style="color:var(--accent-indigo-light);"></i> Accuracy Progress
+      </div>
+      {% for object in objs %}
+      <div class="ev-accuracy-item">
+        <div class="ev-accuracy-header">
+          <span class="ev-accuracy-name">
+            <i class="bi bi-diagram-3-fill me-2" style="color:var(--accent-indigo-light);"></i>
+            {{ object.names }}
+          </span>
+          <span class="ev-accuracy-val">{{ object.ratio|floatformat:2 }}%</span>
+        </div>
+        <div class="ev-progress">
+          <div class="ev-progress-bar" style="width:{{ object.ratio|floatformat:0 }}%"></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Summary Table Column -->
+    <div>
+      <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:1.25rem;display:flex;align-items:center;gap:0.5rem;">
+        <i class="bi bi-table" style="color:var(--accent-cyan);"></i> Accuracy Summary
+      </div>
+      <div class="ev-table-wrapper">
+        <table class="ev-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Model Type</th>
+              <th>Accuracy</th>
+              <th>Rating</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for object in objs %}
+            <tr>
+              <td style="color:var(--text-muted);">{{ forloop.counter }}</td>
+              <td><strong>{{ object.names }}</strong></td>
+              <td>
+                <span class="ev-badge
+                  {% if object.ratio >= 90 %}badge-success
+                  {% elif object.ratio >= 75 %}badge-info
+                  {% else %}badge-warning{% endif %}">
+                  {{ object.ratio|floatformat:2 }}%
+                </span>
+              </td>
+              <td style="color:var(--text-secondary);font-size:0.8rem;">
+                {% if object.ratio >= 90 %}⭐ Excellent
+                {% elif object.ratio >= 75 %}✓ Good
+                {% else %}~ Fair{% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Navigation Actions -->
+  <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border-color);display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center;">
+    <a href="{% url 'likeschart' 'bar' %}" class="ev-btn ev-btn-primary">
+      <i class="bi bi-bar-chart-fill"></i> View Accuracy Chart
+    </a>
+    <a href="{% url 'charts1' 'line' %}" class="ev-btn ev-btn-secondary">
+      <i class="bi bi-graph-up"></i> Line Chart
+    </a>
+    <a href="{% url 'View_Prediction_Of_EV_Energy_Consumption_Type' %}" class="ev-btn ev-btn-secondary">
+      <i class="bi bi-table"></i> Predictions Log
+    </a>
+  </div>
+
+  {% else %}
+  <div class="ev-empty-state">
+    <i class="bi bi-hourglass-split ev-empty-icon" style="color:var(--accent-indigo-light);opacity:1;"></i>
+    <p style="color:var(--text-secondary);font-size:0.9rem;">No training results yet. Training will begin when this page is loaded.</p>
+  </div>
+  {% endif %}
+
+</div>
+
+{% endblock %}

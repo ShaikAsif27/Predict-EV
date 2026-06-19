@@ -1,0 +1,124 @@
+{% extends 'SProvider/design1.html' %}
+{% block researchblock %}
+
+<div class="ev-card">
+  <div class="ev-card-header">
+    <div class="ev-card-icon icon-violet">
+      <i class="bi bi-bar-chart-line-fill"></i>
+    </div>
+    <div>
+      <h2>Trained &amp; Tested Accuracy — Chart</h2>
+      <p>Interactive visualizations of ML model accuracy metrics. Switch chart type below.</p>
+    </div>
+    <div style="margin-left:auto;">
+      <span class="ev-badge badge-info"><i class="bi bi-cpu"></i> {{ chart_type|title }} View</span>
+    </div>
+  </div>
+
+  <!-- Chart Type Controls -->
+  <div class="ev-chart-controls">
+    <span class="ev-chart-label"><i class="bi bi-sliders me-1"></i>Chart Type:</span>
+    <a href="{% url 'likeschart' 'bar' %}"
+       class="ev-btn {% if chart_type == 'bar' %}ev-btn-primary{% else %}ev-btn-secondary{% endif %} ev-btn-sm">
+      <i class="bi bi-bar-chart-fill"></i> Bar Chart
+    </a>
+    <a href="{% url 'likeschart' 'pie' %}"
+       class="ev-btn {% if chart_type == 'pie' %}ev-btn-primary{% else %}ev-btn-secondary{% endif %} ev-btn-sm">
+      <i class="bi bi-pie-chart-fill"></i> Pie Chart
+    </a>
+    <a href="{% url 'likeschart' 'line' %}"
+       class="ev-btn {% if chart_type == 'line' %}ev-btn-primary{% else %}ev-btn-secondary{% endif %} ev-btn-sm">
+      <i class="bi bi-graph-up"></i> Line Chart
+    </a>
+  </div>
+
+  <!-- Chart Container -->
+  <div class="ev-chart-container">
+    <div id="chartContainer"></div>
+    <div class="ev-chart-desc">
+      <i class="bi bi-info-circle" style="color:var(--accent-indigo-light);"></i>
+      Comparing accuracy scores of QRNN, SVM, and Logistic Regression models trained on EV dataset.
+    </div>
+  </div>
+</div>
+
+<!-- Navigation Actions -->
+<div style="margin-top:1.25rem;display:flex;gap:0.75rem;flex-wrap:wrap;">
+  <a href="{% url 'train_model' %}" class="ev-btn ev-btn-secondary">
+    <i class="bi bi-cpu-fill"></i> Training Results
+  </a>
+  <a href="{% url 'charts1' 'bar' %}" class="ev-btn ev-btn-secondary">
+    <i class="bi bi-graph-up-arrow"></i> Accuracy Results Chart
+  </a>
+</div>
+
+<script>
+window.onload = function () {
+  var chart = new CanvasJS.Chart("chartContainer", {
+    animationEnabled: true,
+    animationDuration: 1200,
+    backgroundColor: "transparent",
+    title: {
+      text: "Trained & Tested Model Accuracy",
+      fontColor: "#f0f4ff",
+      fontFamily: "Inter, Plus Jakarta Sans, sans-serif",
+      fontSize: 18,
+      fontWeight: "bold",
+      padding: { bottom: 20 }
+    },
+    legend: {
+      fontColor: "#94a3b8",
+      fontFamily: "Inter, sans-serif",
+      fontSize: 13,
+      cursor: "pointer"
+    },
+    axisX: {
+      labelFontColor: "#94a3b8",
+      labelFontFamily: "Inter, sans-serif",
+      labelFontSize: 12,
+      lineColor: "rgba(255,255,255,0.08)",
+      tickColor: "rgba(255,255,255,0.08)"
+    },
+    axisY: {
+      labelFontColor: "#94a3b8",
+      labelFontFamily: "Inter, sans-serif",
+      labelFontSize: 12,
+      gridColor: "rgba(255,255,255,0.05)",
+      lineColor: "rgba(255,255,255,0.08)",
+      suffix: "%",
+      minimum: 0,
+      maximum: 100
+    },
+    toolTip: {
+      borderColor: "rgba(99,102,241,0.3)",
+      backgroundColor: "rgba(20,31,53,0.95)",
+      fontColor: "#f0f4ff",
+      fontFamily: "Inter, sans-serif"
+    },
+    data: [{
+      type: "{{ chart_type }}",
+      startAngle: 240,
+      showInLegend: true,
+      yValueFormatString: "##0.00\"%\"",
+      indexLabel: "{label}: {y}",
+      indexLabelFontColor: "#f0f4ff",
+      indexLabelFontFamily: "Inter, sans-serif",
+      indexLabelFontSize: 13,
+      indexLabelFontWeight: "600",
+      dataPoints: [
+        {% for o in form %}
+        {
+          y: {{ o.dcount }},
+          label: "{{ o.names }}",
+          color: "{% cycle '#6366f1' '#06b6d4' '#10b981' '#f59e0b' '#ec4899' %}"
+        },
+        {% endfor %}
+      ]
+    }]
+  });
+  chart.render();
+};
+</script>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+{% endblock %}

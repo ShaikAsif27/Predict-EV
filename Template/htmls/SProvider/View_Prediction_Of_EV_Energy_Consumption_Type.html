@@ -1,0 +1,116 @@
+{% extends 'SProvider/design1.html' %}
+{% block researchblock %}
+
+<div class="ev-card">
+  <div class="ev-card-header">
+    <div class="ev-card-icon icon-cyan">
+      <i class="bi bi-table"></i>
+    </div>
+    <div>
+      <h2>EV Energy Consumption — Predictions Log</h2>
+      <p>All submitted prediction records from remote users across the platform.</p>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:0.5rem;">
+      <a href="{% url 'View_Prediction_Of_EV_Energy_Consumption_Type_Ratio' %}" class="ev-btn ev-btn-secondary ev-btn-sm">
+        <i class="bi bi-pie-chart-fill"></i> Ratios
+      </a>
+      <a href="{% url 'Download_Trained_DataSets' %}" class="ev-btn ev-btn-primary ev-btn-sm">
+        <i class="bi bi-download"></i> Export
+      </a>
+    </div>
+  </div>
+
+  <!-- Summary stats row -->
+  <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+    <div style="display:flex;align-items:center;gap:0.5rem;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:99px;padding:0.3rem 0.85rem;">
+      <i class="bi bi-battery-charging" style="color:var(--accent-emerald-light);"></i>
+      <span style="font-size:0.75rem;font-weight:600;color:var(--accent-emerald-light);">Less = Low Consumption</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:0.5rem;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:99px;padding:0.3rem 0.85rem;">
+      <i class="bi bi-battery-exclamation" style="color:var(--accent-amber-light);"></i>
+      <span style="font-size:0.75rem;font-weight:600;color:var(--accent-amber-light);">More = High Consumption</span>
+    </div>
+  </div>
+
+  <div class="ev-table-wrapper">
+    <table class="ev-table">
+      <thead>
+        <tr>
+          <th>FID</th>
+          <th>Vehicle Model</th>
+          <th>Battery (kWh)</th>
+          <th>Station ID</th>
+          <th>Location</th>
+          <th>Start</th>
+          <th>End</th>
+          <th>Energy (kWh)</th>
+          <th>Duration (h)</th>
+          <th>Rate (kW)</th>
+          <th>Cost (USD)</th>
+          <th>Age (yr)</th>
+          <th>Charger</th>
+          <th>User Type</th>
+          <th>Prediction</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for object in list_objects %}
+        <tr>
+          <td style="color:var(--text-muted);font-family:monospace;">{{ object.Fid }}</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+              <div style="width:24px;height:24px;border-radius:6px;background:rgba(99,102,241,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="bi bi-car-front-fill" style="font-size:0.65rem;color:var(--accent-indigo-light);"></i>
+              </div>
+              <strong>{{ object.Vehicle_Model }}</strong>
+            </div>
+          </td>
+          <td>{{ object.Battery_Capacity_kWh }}</td>
+          <td style="font-family:monospace;font-size:0.78rem;">{{ object.Charging_Station_ID }}</td>
+          <td>{{ object.Charging_Station_Location }}</td>
+          <td style="color:var(--text-secondary);font-size:0.8rem;">{{ object.Charging_Start_Time }}</td>
+          <td style="color:var(--text-secondary);font-size:0.8rem;">{{ object.Charging_EndTime }}</td>
+          <td>{{ object.Energy_Consumed_kWh }}</td>
+          <td>{{ object.Charging_Duration_hours }}</td>
+          <td>{{ object.Charging_Rate_kW }}</td>
+          <td>{{ object.Charging_Cost_USD }}</td>
+          <td>{{ object.Vehicle_Age_years }}</td>
+          <td style="color:var(--text-secondary);">{{ object.Charger_Type }}</td>
+          <td>{{ object.User_Type }}</td>
+          <td>
+            {% if object.Prediction == "Less" %}
+              <span class="ev-badge badge-success">
+                <i class="bi bi-battery-charging"></i> Less
+              </span>
+            {% elif object.Prediction == "More" %}
+              <span class="ev-badge badge-warning">
+                <i class="bi bi-battery-exclamation"></i> More
+              </span>
+            {% else %}
+              <span class="ev-badge badge-info">{{ object.Prediction }}</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="15" style="text-align:center;padding:3.5rem;color:var(--text-muted);">
+            <i class="bi bi-inbox" style="font-size:2.5rem;display:block;margin-bottom:0.75rem;opacity:0.5;"></i>
+            No prediction records found yet.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div style="margin-top:1.25rem;display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center;">
+    <a href="{% url 'View_Prediction_Of_EV_Energy_Consumption_Type_Ratio' %}" class="ev-btn ev-btn-primary">
+      <i class="bi bi-pie-chart-fill"></i> View Ratios
+    </a>
+    <a href="{% url 'Download_Trained_DataSets' %}" class="ev-btn ev-btn-secondary">
+      <i class="bi bi-download"></i> Download Dataset
+    </a>
+  </div>
+</div>
+
+{% endblock %}

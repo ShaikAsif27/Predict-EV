@@ -1,0 +1,128 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Create Account — EV Analytics Platform">
+  <title>Register — EV Analytics Platform</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="{% static 'custom.css' %}" rel="stylesheet">
+</head>
+<body>
+
+<div class="ev-orb ev-orb-1"></div>
+<div class="ev-orb ev-orb-2"></div>
+<div class="ev-orb ev-orb-3"></div>
+
+<div class="ev-auth-wrapper" style="align-items:flex-start;padding-top:2.5rem;">
+  <div class="ev-auth-container" style="max-width:660px;">
+
+    <!-- Logo / Branding -->
+    <div class="ev-auth-logo">
+      <div class="logo-badge" style="background:linear-gradient(135deg,var(--accent-emerald),var(--accent-cyan));">⚡</div>
+      <h1><span class="gradient-text">Create Your Account</span></h1>
+      <p>Join the EV Energy Prediction Platform and start predicting energy consumption with AI</p>
+    </div>
+
+    <!-- Registration Card -->
+    <div class="ev-auth-card">
+      <h2 style="margin-bottom:1.5rem;">
+        <i class="bi bi-person-plus-fill" style="color:var(--accent-emerald-light)"></i> Register Details
+      </h2>
+
+      <form method="POST" role="form" autocomplete="off">
+        {% csrf_token %}
+
+        <div class="ev-reg-grid">
+          <div class="ev-form-group">
+            <label for="reg_username"><i class="bi bi-person-fill"></i> Username</label>
+            <input type="text" id="reg_username" name="username" class="ev-form-control"
+                   placeholder="Choose a username" required>
+          </div>
+
+          <div class="ev-form-group">
+            <label for="reg_password"><i class="bi bi-lock-fill"></i> Password</label>
+            <input type="password" id="reg_password" name="password" class="ev-form-control"
+                   placeholder="Choose a password" required>
+          </div>
+
+          <div class="ev-form-group">
+            <label for="reg_email"><i class="bi bi-envelope-fill"></i> Email Address</label>
+            <input type="email" id="reg_email" name="email" class="ev-form-control"
+                   placeholder="you@example.com" required>
+          </div>
+
+          <div class="ev-form-group">
+            <label for="reg_phoneno"><i class="bi bi-telephone-fill"></i> Mobile Number</label>
+            <input type="number" id="reg_phoneno" name="phoneno" class="ev-form-control"
+                   placeholder="Enter mobile number" required>
+          </div>
+
+          <div class="ev-form-group">
+            <label for="reg_gender"><i class="bi bi-gender-ambiguous"></i> Gender</label>
+            <select id="reg_gender" name="gender" class="ev-form-control">
+              <option value="">— Select Gender —</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+
+          <div class="ev-form-group">
+            <label for="reg_country"><i class="bi bi-globe2"></i> Country</label>
+            <input type="text" id="reg_country" name="country" class="ev-form-control"
+                   placeholder="Enter country name" required>
+          </div>
+
+          <div class="ev-form-group">
+            <label for="reg_state"><i class="bi bi-map-fill"></i> State</label>
+            <input type="text" id="reg_state" name="state" class="ev-form-control"
+                   placeholder="Enter state name" required>
+          </div>
+
+          <div class="ev-form-group">
+            <label for="reg_city"><i class="bi bi-building-fill"></i> City</label>
+            <input type="text" id="reg_city" name="city" class="ev-form-control"
+                   placeholder="Enter city name" required>
+          </div>
+        </div>
+
+        <div class="ev-form-group">
+          <label for="reg_address"><i class="bi bi-geo-alt-fill"></i> Address</label>
+          <textarea id="reg_address" name="address" class="ev-form-control"
+                    placeholder="Enter your full address"></textarea>
+        </div>
+
+        <button type="submit" name="submit" id="registerBtn"
+                class="ev-btn ev-btn-success ev-btn-lg ev-btn-full" style="margin-top:0.5rem;">
+          <i class="bi bi-person-check-fill"></i> Create Account
+        </button>
+      </form>
+
+      <!-- Registration Status -->
+      {% if object %}
+      <div class="ev-status-alert alert-ok">
+        <i class="bi bi-check-circle-fill"></i>
+        {{ object }}
+      </div>
+      {% endif %}
+
+      <div class="ev-divider" style="margin-top:1.5rem;"><span>already have an account?</span></div>
+
+      <div class="ev-auth-footer">
+        <a href="{% url 'login' %}">
+          <i class="bi bi-person-fill"></i> Remote User Login
+        </a>
+        <a href="{% url 'serviceproviderlogin' %}">
+          <i class="bi bi-shield-lock-fill"></i> Service Provider
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+{% extends 'SProvider/design1.html' %}
+{% block researchblock %}
+
+<div class="ev-card">
+  <div class="ev-card-header">
+    <div class="ev-card-icon icon-amber">
+      <i class="bi bi-graph-up"></i>
+    </div>
+    <div>
+      <h2>EV Consumption Type Ratio — Chart</h2>
+      <p>Visual distribution of predicted energy consumption categories across all sessions.</p>
+    </div>
+    <div style="margin-left:auto;">
+      <span class="ev-badge badge-warning"><i class="bi bi-pie-chart"></i> {{ chart_type|title }} View</span>
+    </div>
+  </div>
+
+  <!-- Chart Type Controls -->
+  <div class="ev-chart-controls">
+    <span class="ev-chart-label"><i class="bi bi-sliders me-1"></i>Chart Type:</span>
+    <a href="{% url 'charts' 'bar' %}"
+       class="ev-btn {% if chart_type == 'bar' %}ev-btn-primary{% else %}ev-btn-secondary{% endif %} ev-btn-sm">
+      <i class="bi bi-bar-chart-fill"></i> Bar Chart
+    </a>
+    <a href="{% url 'charts' 'pie' %}"
+       class="ev-btn {% if chart_type == 'pie' %}ev-btn-primary{% else %}ev-btn-secondary{% endif %} ev-btn-sm">
+      <i class="bi bi-pie-chart-fill"></i> Pie Chart
+    </a>
+    <a href="{% url 'charts' 'line' %}"
+       class="ev-btn {% if chart_type == 'line' %}ev-btn-primary{% else %}ev-btn-secondary{% endif %} ev-btn-sm">
+      <i class="bi bi-graph-up"></i> Line Chart
+    </a>
+  </div>
+
+  <!-- Legend Strip -->
+  <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div style="width:12px;height:12px;border-radius:50%;background:var(--accent-emerald-light);box-shadow:0 0 8px rgba(16,185,129,0.5);"></div>
+      <span style="font-size:0.78rem;font-weight:600;color:var(--text-secondary);">Less — Low Consumption</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div style="width:12px;height:12px;border-radius:50%;background:var(--accent-amber-light);box-shadow:0 0 8px rgba(245,158,11,0.5);"></div>
+      <span style="font-size:0.78rem;font-weight:600;color:var(--text-secondary);">More — High Consumption</span>
+    </div>
+  </div>
+
+  <!-- Chart Container -->
+  <div class="ev-chart-container">
+    <div id="chartContainer"></div>
+    <div class="ev-chart-desc">
+      <i class="bi bi-info-circle" style="color:var(--accent-amber-light);"></i>
+      Ratio of Less vs More energy consumption predictions from all submitted records.
+    </div>
+  </div>
+</div>
+
+<!-- Navigation -->
+<div style="margin-top:1.25rem;display:flex;gap:0.75rem;flex-wrap:wrap;">
+  <a href="{% url 'View_Prediction_Of_EV_Energy_Consumption_Type_Ratio' %}" class="ev-btn ev-btn-secondary">
+    <i class="bi bi-pie-chart-fill"></i> Ratio Summary
+  </a>
+  <a href="{% url 'View_Prediction_Of_EV_Energy_Consumption_Type' %}" class="ev-btn ev-btn-secondary">
+    <i class="bi bi-table"></i> Predictions Log
+  </a>
+</div>
+
+<script>
+window.onload = function () {
+  var chart = new CanvasJS.Chart("chartContainer", {
+    animationEnabled: true,
+    animationDuration: 1200,
+    backgroundColor: "transparent",
+    title: {
+      text: "EV Energy Consumption Type Ratio",
+      fontColor: "#f0f4ff",
+      fontFamily: "Inter, Plus Jakarta Sans, sans-serif",
+      fontSize: 18,
+      fontWeight: "bold",
+      padding: { bottom: 20 }
+    },
+    legend: {
+      fontColor: "#94a3b8",
+      fontFamily: "Inter, sans-serif",
+      fontSize: 13,
+      cursor: "pointer"
+    },
+    axisX: {
+      labelFontColor: "#94a3b8",
+      labelFontFamily: "Inter, sans-serif",
+      labelFontSize: 12,
+      lineColor: "rgba(255,255,255,0.08)",
+      tickColor: "rgba(255,255,255,0.08)"
+    },
+    axisY: {
+      labelFontColor: "#94a3b8",
+      labelFontFamily: "Inter, sans-serif",
+      labelFontSize: 12,
+      gridColor: "rgba(255,255,255,0.05)",
+      lineColor: "rgba(255,255,255,0.08)"
+    },
+    toolTip: {
+      borderColor: "rgba(245,158,11,0.3)",
+      backgroundColor: "rgba(20,31,53,0.95)",
+      fontColor: "#f0f4ff",
+      fontFamily: "Inter, sans-serif"
+    },
+    data: [{
+      type: "{{ chart_type }}",
+      startAngle: 240,
+      showInLegend: true,
+      yValueFormatString: "##0.00\"%\"",
+      indexLabel: "{label}: {y}",
+      indexLabelFontColor: "#f0f4ff",
+      indexLabelFontFamily: "Inter, sans-serif",
+      indexLabelFontSize: 13,
+      indexLabelFontWeight: "600",
+      dataPoints: [
+        {% for o in form %}
+        {
+          y: {{ o.dcount }},
+          label: "{{ o.names }}",
+          color: "{% if o.names == 'Less' %}#10b981{% else %}#f59e0b{% endif %}"
+        },
+        {% endfor %}
+      ]
+    }]
+  });
+  chart.render();
+};
+</script>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+{% endblock %}
