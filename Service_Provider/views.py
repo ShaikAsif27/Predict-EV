@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.db.models import Count
 from django.db.models import Q
 import datetime
-import xlwt
+# xlwt imported lazily inside Download_Trained_DataSets to avoid import errors at startup
 from django.http import HttpResponse
 import numpy as np
 import pandas as pd
@@ -109,7 +109,7 @@ def likeschart(request,like_chart):
 
 @admin_required
 def Download_Trained_DataSets(request):
-
+    import xlwt  # lazy import - only needed for Excel download
     response = HttpResponse(content_type='application/ms-excel')
     # decide file name
     response['Content-Disposition'] = 'attachment; filename="Predicted_Data.xls"'

@@ -2,15 +2,17 @@ services:
   - type: web
     name: predict-ev
     env: python
-    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --no-input"
-    startCommand: "python manage.py migrate --run-syncdb && gunicorn predicting_electric_vehicle_energy_consumption.wsgi --log-file - --bind 0.0.0.0:$PORT"
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python manage.py collectstatic --no-input && python manage.py migrate --run-syncdb && gunicorn predicting_electric_vehicle_energy_consumption.wsgi --log-file - --bind 0.0.0.0:$PORT"
     envVars:
+      - key: PYTHON_VERSION
+        value: "3.9.18"
       - key: DEBUG
         value: "False"
       - key: ALLOWED_HOSTS
         value: "*"
       - key: SECRET_KEY
-        value: "render-production-secret-key-ev-analytics-2026"
+        value: "render-ev-analytics-secret-key-2026-production"
     disk:
       name: ev-db-disk
       mountPath: /data
