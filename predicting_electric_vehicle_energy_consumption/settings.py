@@ -67,38 +67,31 @@ WSGI_APPLICATION = 'predicting_electric_vehicle_energy_consumption.wsgi.applicat
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
+# On Render (production) we use SQLite with the persistent /data disk.
+# Locally, if a MySQL server is available it will be used instead.
 
-try:
+_USE_MYSQL = os.environ.get('USE_MYSQL', 'False').lower() in ('true', '1', 't')
+
+if _USE_MYSQL:
     import pymysql
     pymysql.install_as_MySQLdb()
-    # Test connection with 1-second timeout
-    conn = pymysql.connect(
-        host='127.0.0.1',
-        user='root',
-        password='',
-        port=3306,
-        connect_timeout=1
-    )
-    conn.close()
-
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'predicting_electric_vehicle_energy_consumption',
-            'USER':'root',
-            'PASSWORD': '',
-            'HOST' :'127.0.0.1',
-            'PORT' :'3306',
+            'NAME': os.environ.get('MYSQL_DB', 'predicting_electric_vehicle_energy_consumption'),
+            'USER': os.environ.get('MYSQL_USER', 'root'),
+            'PASSWORD': os.environ.get('MYSQL_PASSWORD', ''),
+            'HOST': os.environ.get('MYSQL_HOST', '127.0.0.1'),
+            'PORT': os.environ.get('MYSQL_PORT', '3306'),
         }
     }
-except Exception:
-    import sys
-    print("Warning: Could not connect to MySQL server. Falling back to local SQLite database.", file=sys.stderr)
-    db_dir = '/data' if os.path.exists('/data') else BASE_DIR
+else:
+    # SQLite - use Render's persistent disk at /data if available, else BASE_DIR
+    _db_dir = '/data' if os.path.exists('/data') else BASE_DIR
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(db_dir, 'db.sqlite3'),
+            'NAME': os.path.join(_db_dir, 'db.sqlite3'),
         }
     }
 

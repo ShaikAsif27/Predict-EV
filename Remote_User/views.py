@@ -1,5 +1,6 @@
 
 from django.shortcuts import render, redirect, get_object_or_404
+from django.conf import settings as django_settings
 
 import pandas as pd
 import re
@@ -14,6 +15,11 @@ from Remote_User.models import ClientRegister_Model,predict_ev_energy_consumptio
 from functools import wraps
 import os
 import joblib
+
+# Absolute paths - work correctly both locally and on Render
+BASE_DIR = django_settings.BASE_DIR
+MODEL_PATH = os.path.join(BASE_DIR, 'ev_model.joblib')
+DATASET_PATH = os.path.join(BASE_DIR, 'Datasets.csv')
 
 def user_required(view_func):
     @wraps(view_func)
@@ -95,15 +101,15 @@ def Prediction_Of_EV_Energy_Consumption_Type(request):
         Charger_Type= request.POST.get('Charger_Type')
         User_Type= request.POST.get('User_Type')
 
-        # Model Loading & Caching Logic
-        if os.path.exists('ev_model.joblib'):
-            print("Loading pre-trained ensemble model from cache...")
-            serialized = joblib.load('ev_model.joblib')
+        # Model Loading & Caching Logic - use absolute BASE_DIR paths for Render compatibility
+        if os.path.exists(MODEL_PATH):
+            print("Loading pre-trained ensemble model from:", MODEL_PATH)
+            serialized = joblib.load(MODEL_PATH)
             classifier = serialized['model']
             cv = serialized['cv']
         else:
             print("Model cache not found. Performing dynamic training fallback...")
-            data = pd.read_csv("Datasets.csv", encoding='latin-1')
+            data = pd.read_csv(DATASET_PATH, encoding='latin-1')
 
             def apply_results(label):
                 if (label == 0):
@@ -150,7 +156,7 @@ def Prediction_Of_EV_Energy_Consumption_Type(request):
 
             # Save it so next runs are cached
             try:
-                joblib.dump({'model': classifier, 'cv': cv}, 'ev_model.joblib')
+                joblib.dump({'model': classifier, 'cv': cv}, MODEL_PATH)
             except Exception as e:
                 print("Could not cache model:", e)
 

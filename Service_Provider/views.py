@@ -3,7 +3,9 @@ from django.db.models import  Count, Avg
 from django.shortcuts import render, redirect
 from django.db.models import Count
 from django.db.models import Q
+from django.conf import settings as django_settings
 import datetime
+import os
 # xlwt imported lazily inside Download_Trained_DataSets to avoid import errors at startup
 from django.http import HttpResponse
 import numpy as np
@@ -21,6 +23,11 @@ from sklearn.ensemble import RandomForestClassifier
 from Remote_User.models import ClientRegister_Model,predict_ev_energy_consumption,detection_ratio,detection_accuracy
 from functools import wraps
 import joblib
+
+# Absolute paths - work correctly both locally and on Render
+BASE_DIR = django_settings.BASE_DIR
+MODEL_PATH = os.path.join(BASE_DIR, 'ev_model.joblib')
+DATASET_PATH = os.path.join(BASE_DIR, 'Datasets.csv')
 
 def admin_required(view_func):
     @wraps(view_func)
@@ -150,7 +157,7 @@ def Download_Trained_DataSets(request):
 @admin_required
 def train_model(request):
     detection_accuracy.objects.all().delete()
-    data = pd.read_csv("Datasets.csv", encoding='latin-1')
+    data = pd.read_csv(DATASET_PATH, encoding='latin-1')
 
     def apply_results(label):
         if (label == 0):
@@ -239,7 +246,7 @@ def train_model(request):
     ensemble_clf = VotingClassifier(models_ensemble)
     ensemble_clf.fit(X_train, y_train)
 
-    joblib.dump({'model': ensemble_clf, 'cv': cv}, 'ev_model.joblib')
+    joblib.dump({'model': ensemble_clf, 'cv': cv}, MODEL_PATH)
 
     labeled = 'labeled_data.csv'
     data.to_csv(labeled, index=False)

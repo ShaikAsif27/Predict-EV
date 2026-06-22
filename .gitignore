@@ -1,14 +1,13 @@
 # Django
 *.pyc
 __pycache__/
-db.sqlite3
 db.sqlite3-journal
 media/
 Template/media/
 staticfiles/
 
 # Scikit-Learn Cache & Serialization
-*.joblib
+# NOTE: ev_model.joblib is intentionally NOT ignored - it must be deployed
 *.pkl
 *.pickle
 
